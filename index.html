@@ -107,7 +107,7 @@
                             { q: "Which key toggles Snapping on/off?", a: ["S", "N", "Cmd + N", "Shift + S"], ans: 1 },
                             { q: "J, K, and L keys are used for?", a: ["Navigation (Reverse, Stop, Forward)", "Saving", "Cutting", "Exporting"], ans: 0 },
                             { q: "What does the 'Inspector' do?", a: ["Shows project files", "Mixes audio", "Adjusts clip properties like Zoom and Position", "Adds metadata"], ans: 2 },
-                            { q: "A 'Gap' in the timeline is called?", a: ["Empty space", "Gap", "Void", "Black Hole"], ans: 1 },
+                            { q: "A 'Gap' in the timeline is called?", a: ["Gap", "Empty space", "Void", "Black Hole"], ans: 1 },
                             { q: "How do you zoom in/out of the timeline on a Mac?", a: ["Scroll only", "Cmd+ / Cmd-", "Pinch on trackpad", "Shift + Z"], ans: 1 },
                             { q: "What is 'Overwriting' a clip?", a: ["Pushing other clips aside", "Deleting the timeline", "Placing it on top and replacing current footage", "Changing color"], ans: 2 },
                             { q: "Standard frame rate for cinema?", a: ["24fps", "60fps", "30fps", "120fps"], ans: 0 }
@@ -350,9 +350,10 @@
             if (isAcademyFinished) return <CelebrationPage reset={() => { setIsAcademyFinished(false); setPassedModules({ edit: [], color: [], fairlight: [], fusion: [] }); switchTab('edit'); }} isDark={isDark} />;
 
             return (
-                <div className={`min-h-screen px-4 py-6 md:p-12 lg:px-20 transition-colors duration-500 relative`}>
+                <div className={`min-h-screen px-4 py-6 md:p-12 transition-colors duration-500 relative flex flex-col items-center`}>
                     <div className="diagonal-bg"></div>
                     
+                    {/* Security Notification Bar - Topmost Layer */}
                     {notif && (
                         <div className="fixed top-0 left-0 w-full z-[9999] notif-entry">
                             <div className="bg-black text-[var(--accent-lime)] border-b-2 border-[var(--accent-lime)] px-6 py-3 md:py-4 text-center shadow-2xl backdrop-blur-xl">
@@ -364,6 +365,7 @@
                         </div>
                     )}
 
+                    {/* Fixed Signal Control (Sun/Moon) */}
                     <div className="fixed top-4 right-4 md:top-6 md:right-10 lg:right-12 z-[110]">
                         <button 
                             onClick={() => setIsDark(!isDark)}
@@ -373,24 +375,24 @@
                         </button>
                     </div>
 
-                    <div className="max-w-screen-2xl mx-auto space-y-8 md:space-y-16">
+                    <div className="max-w-4xl w-full mx-auto space-y-8 md:space-y-16">
                         
                         <header className={`flex flex-col items-start gap-6 border-l pl-6 md:pl-12 staggered-entry ${isDark ? 'border-white/10' : 'border-slate-200'}`}>
                             <div className="space-y-2 text-left w-full tracking-tighter text-left">
                                 <h1 className={`text-2xl md:text-5xl lg:text-7xl font-black font-cinema uppercase leading-none ${isDark ? 'text-white' : 'text-slate-900'}`}>DAVINCI MASTER ACADEMY</h1>
                                 <div className="flex justify-between items-center w-full">
                                     <p className={`font-bold uppercase tracking-widest text-[7px] md:text-[11px] ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>Certification Path • 480 Validation Points</p>
-                                    <button onClick={() => setIsMenuOpen(!isMenuOpen)} className={`lg:hidden p-2 rounded-full border ${isDark ? 'bg-white/5 border-white/10 text-white' : 'bg-white border-slate-200 text-slate-900'}`}>
+                                    <button onClick={() => setIsMenuOpen(!isMenuOpen)} className={`p-2 rounded-full border ${isDark ? 'bg-white/5 border-white/10 text-white' : 'bg-white border-slate-200 text-slate-900'}`}>
                                         <Icon name={isMenuOpen ? "X" : "Menu"} size={18} />
                                     </button>
                                 </div>
                             </div>
-                            <nav className={`flex p-1 rounded-2xl border overflow-x-auto whitespace-nowrap scrollbar-hide w-full md:w-auto ${isDark ? 'bg-white/5 border-white/5 shadow-2xl' : 'bg-white border-slate-100 shadow-lg shadow-slate-200'}`}>
+                            <nav className={`flex p-1 rounded-2xl border overflow-x-auto whitespace-nowrap scrollbar-hide w-full shadow-2xl ${isDark ? 'bg-white/5 border-white/5' : 'bg-white border-slate-100 shadow-lg shadow-slate-200'}`}>
                                 {Object.keys(ACADEMY_DATA).map((tab) => {
                                     const unlocked = isModuleUnlocked(tab, 0);
                                     const isActive = activeTab === tab;
                                     return (
-                                        <button key={tab} onClick={() => switchTab(tab)} className={`flex items-center justify-center gap-2 px-5 md:px-10 py-3 md:py-5 rounded-xl text-[9px] md:text-xs font-black uppercase tracking-tighter transition-all ${isActive ? 'bg-[var(--accent-lime)] text-black shadow-lg shadow-lime-500/20' : unlocked ? (isDark ? 'text-slate-500 hover:text-white' : 'text-slate-400 hover:text-slate-900') : 'opacity-30 grayscale'}`}>
+                                        <button key={tab} onClick={() => switchTab(tab)} className={`flex-1 flex items-center justify-center gap-2 px-5 py-3 md:py-5 rounded-xl text-[9px] md:text-xs font-black uppercase tracking-tighter transition-all ${isActive ? 'bg-[var(--accent-lime)] text-black shadow-lg shadow-lime-500/20' : unlocked ? (isDark ? 'text-slate-500 hover:text-white' : 'text-slate-400 hover:text-slate-900') : 'opacity-30 grayscale'}`}>
                                             <Icon name={unlocked ? ACADEMY_DATA[tab].icon : 'Lock'} size={14} /> {tab}
                                         </button>
                                     );
@@ -398,61 +400,68 @@
                             </nav>
                         </header>
 
-                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 relative items-start">
-                            <aside className={`lg:col-span-3 space-y-8 fixed inset-0 z-[200] p-8 lg:relative lg:p-0 lg:bg-transparent lg:block ${isMenuOpen ? 'block' : 'hidden'} ${isDark ? 'bg-[var(--bg-obsidian)]' : 'bg-slate-50'}`}>
-                                <div className="flex justify-between items-center mb-8 lg:hidden text-left text-left">
-                                    <h2 className={`text-[10px] font-black uppercase tracking-widest font-cinema ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>Syllabus</h2>
-                                    <button onClick={() => setIsMenuOpen(false)}><Icon name="X" size={24} /></button>
-                                </div>
-                                <h2 className={`hidden lg:block font-cinema text-[9px] md:text-[11px] font-black uppercase tracking-[0.4em] mb-6 text-left ${isDark ? 'text-slate-700' : 'text-slate-300'}`}>Path Syllabus</h2>
-                                <div className="space-y-3 max-h-[60vh] lg:max-h-[70vh] overflow-y-auto pr-3 custom-scrollbar">
-                                    {activeAcademy.modules.map((m, idx) => {
-                                        const unlocked = isModuleUnlocked(activeTab, idx);
-                                        const isPassed = passedModules[activeTab].includes(idx);
-                                        const isCurrent = currentModuleIdx === idx;
-                                        return (
-                                            <button key={m.id} onClick={() => { if (unlocked) { setCurrentModuleIdx(idx); resetModule(); } else triggerLockNotif(); }} className={`w-full p-4 md:p-6 rounded-[24px] flex items-center justify-center gap-4 transition-all border ${isCurrent ? (isDark ? 'bg-white/5 border-[var(--accent-lime)]/40 shadow-lime-500/10 shadow-lg' : 'bg-white border-[var(--accent-lime)] shadow-xl shadow-slate-200') : unlocked ? (isDark ? 'border-transparent hover:bg-white/5 text-slate-300' : 'border-transparent hover:bg-white text-slate-600') : 'opacity-40 border-transparent text-zinc-500'}`}>
-                                                <div className="flex items-center gap-4 w-full">
-                                                    <span className={`text-[10px] md:text-[11px] font-black w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-2xl shrink-0 ${isCurrent ? 'bg-[var(--accent-lime)] text-black' : isPassed ? 'bg-emerald-500/20 text-emerald-400' : (isDark ? 'bg-white/5 text-slate-500' : 'bg-slate-100 text-slate-400')}`}>
-                                                        {isPassed ? <Icon name="Check" size={14} /> : unlocked ? idx + 1 : <Icon name="Lock" size={12} />}
-                                                    </span>
-                                                    <span className={`text-[11px] md:text-[13px] font-bold truncate uppercase tracking-tighter text-left flex-1 ${isDark ? (isCurrent ? 'text-white' : 'text-slate-400') : (isCurrent ? 'text-slate-900' : 'text-slate-500')}`}>{m.title}</span>
-                                                </div>
-                                            </button>
-                                        );
-                                    })}
-                                </div>
-                            </aside>
+                        {/* Portrait-Style Vertical Flow */}
+                        <div className="relative items-start flex flex-col gap-8 md:gap-16">
+                            
+                            {/* Syllabus Overlay Menu - Stays as a hidden-until-clicked overlay on all screen widths */}
+                            {isMenuOpen && (
+                                <aside className={`fixed inset-0 z-[200] p-8 staggered-entry flex flex-col ${isDark ? 'bg-[var(--bg-obsidian)]' : 'bg-slate-50'}`}>
+                                    <div className="flex justify-between items-center mb-8">
+                                        <h2 className={`text-[10px] font-black uppercase tracking-widest font-cinema ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>Syllabus</h2>
+                                        <button onClick={() => setIsMenuOpen(false)} className={`p-2 rounded-full border ${isDark ? 'bg-white/5 border-white/10 text-white' : 'bg-white border-slate-200 text-slate-900'}`}>
+                                            <Icon name="X" size={24} />
+                                        </button>
+                                    </div>
+                                    <h2 className={`font-cinema text-[9px] md:text-[11px] font-black uppercase tracking-[0.4em] mb-6 text-left ${isDark ? 'text-slate-700' : 'text-slate-300'}`}>Path Syllabus</h2>
+                                    <div className="space-y-3 max-h-[80vh] overflow-y-auto pr-3 custom-scrollbar flex-1">
+                                        {activeAcademy.modules.map((m, idx) => {
+                                            const unlocked = isModuleUnlocked(activeTab, idx);
+                                            const isPassed = passedModules[activeTab].includes(idx);
+                                            const isCurrent = currentModuleIdx === idx;
+                                            return (
+                                                <button key={m.id} onClick={() => { if (unlocked) { setCurrentModuleIdx(idx); resetModule(); } else triggerLockNotif(); }} className={`w-full p-4 md:p-6 rounded-[24px] flex items-center gap-4 transition-all border ${isCurrent ? (isDark ? 'bg-white/5 border-[var(--accent-lime)]/40 shadow-lime-500/10 shadow-lg' : 'bg-white border-[var(--accent-lime)] shadow-xl shadow-slate-200') : unlocked ? (isDark ? 'border-transparent hover:bg-white/5 text-slate-300' : 'border-transparent hover:bg-white text-slate-600') : 'opacity-40 border-transparent text-zinc-500'}`}>
+                                                    <div className="flex items-center gap-4 w-full">
+                                                        <span className={`text-[10px] md:text-[11px] font-black w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-2xl shrink-0 ${isCurrent ? 'bg-[var(--accent-lime)] text-black' : isPassed ? 'bg-emerald-500/20 text-emerald-400' : (isDark ? 'bg-white/5 text-slate-500' : 'bg-slate-100 text-slate-400')}`}>
+                                                            {isPassed ? <Icon name="Check" size={14} /> : unlocked ? idx + 1 : <Icon name="Lock" size={12} />}
+                                                        </span>
+                                                        <span className={`text-[11px] md:text-[13px] font-bold truncate uppercase tracking-tighter text-left flex-1 ${isDark ? (isCurrent ? 'text-white' : 'text-slate-400') : (isCurrent ? 'text-slate-900' : 'text-slate-500')}`}>{m.title}</span>
+                                                    </div>
+                                                </button>
+                                            );
+                                        })}
+                                    </div>
+                                </aside>
+                            )}
 
-                            <main className="lg:col-span-9 space-y-6 md:space-y-12 text-left">
+                            <main className="w-full space-y-6 md:space-y-12 text-left">
                                 {!isCompleted ? (
-                                    <div key={`${activeTab}-${currentModuleIdx}-${qIdx}`} className={`quiz-card border rounded-[35px] md:rounded-[60px] p-6 md:p-16 lg:p-24 space-y-12 md:space-y-20 backdrop-blur-3xl staggered-entry ${isDark ? 'bg-white/5 border-white/5 shadow-2xl' : 'bg-white border-slate-200 shadow-2xl shadow-slate-200/50'}`}>
-                                        <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 md:gap-20 text-left">
+                                    <div key={`${activeTab}-${currentModuleIdx}-${qIdx}`} className={`quiz-card border rounded-[35px] md:rounded-[60px] p-6 md:p-16 space-y-12 backdrop-blur-3xl staggered-entry w-full ${isDark ? 'bg-white/5 border-white/5 shadow-2xl' : 'bg-white border-slate-200 shadow-2xl shadow-slate-200/50'}`}>
+                                        <div className="grid grid-cols-1 gap-8 md:gap-16 text-left">
                                             <section className="space-y-6 md:space-y-10">
                                                 <div className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-full border text-[8px] md:text-[10px] font-black uppercase tracking-widest ${isDark ? 'bg-white/5 border-white/10 text-slate-400' : 'bg-slate-50 border-slate-100 text-slate-500'}`}><Icon name="Zap" size={12} /> Logic Node {currentModuleIdx + 1}</div>
-                                                <h2 className={`text-3xl md:text-6xl lg:text-7xl font-black leading-[0.9] tracking-tighter uppercase font-cinema text-left ${isDark ? 'text-white' : 'text-slate-900'}`}>{module.title}</h2>
-                                                <p className={`text-base md:text-xl font-medium leading-relaxed max-w-xl text-left ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>{module.content}</p>
+                                                <h2 className={`text-3xl md:text-5xl lg:text-7xl font-black leading-[0.9] tracking-tighter uppercase font-cinema text-left ${isDark ? 'text-white' : 'text-slate-900'}`}>{module.title}</h2>
+                                                <p className={`text-base md:text-xl font-medium leading-relaxed text-left ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>{module.content}</p>
                                             </section>
-                                            <section className={`rounded-[30px] p-8 md:p-12 border-l-[3px] border-[var(--accent-lime)] space-y-8 self-start ${isDark ? 'bg-white/5 shadow-inner' : 'bg-slate-50 shadow-sm'}`}>
+                                            <section className={`rounded-[30px] p-8 md:p-12 border-l-[3px] border-[var(--accent-lime)] space-y-8 ${isDark ? 'bg-white/5 shadow-inner' : 'bg-slate-50 shadow-sm'}`}>
                                                 <div className="flex items-center gap-4 text-[var(--accent-lime)]"><Icon name="Eye" size={22} /><h3 className="font-cinema text-[10px] md:text-[12px] font-black uppercase tracking-[0.3em]">Mental Model</h3></div>
                                                 <p className={`text-lg md:text-2xl font-medium leading-relaxed italic underline underline-offset-[12px] text-left ${isDark ? 'text-slate-100 decoration-white/10' : 'text-slate-700 decoration-slate-200'}`}>{module.mentalModel}</p>
                                             </section>
                                         </div>
                                         
-                                        <div className={`pt-12 md:pt-24 border-t space-y-10 md:space-y-20 ${isDark ? 'border-white/5' : 'border-slate-100'}`}>
+                                        <div className={`pt-12 border-t space-y-10 ${isDark ? 'border-white/5' : 'border-slate-100'}`}>
                                             <div className="flex flex-col sm:flex-row items-center justify-between gap-6 text-left">
                                                 <div className="flex items-center gap-5 text-left w-full sm:w-auto">
-                                                    <div className={`w-12 h-12 md:w-16 md:h-16 rounded-full flex items-center justify-center border ${isDark ? 'bg-white/5 border-white/10 text-slate-400' : 'bg-slate-50 border-slate-200 text-slate-600'}`}><Icon name="Scan" size={24} /></div>
+                                                    <div className={`w-12 h-12 rounded-full flex items-center justify-center border ${isDark ? 'bg-white/5 border-white/10 text-slate-400' : 'bg-slate-50 border-slate-200 text-slate-600'}`}><Icon name="Scan" size={24} /></div>
                                                     <div>
                                                         <h3 className={`font-black uppercase tracking-widest text-xs md:text-sm ${isDark ? 'text-white' : 'text-slate-900'}`}>Logic Validation</h3>
                                                         <p className="text-[8px] md:text-[11px] text-slate-500 uppercase tracking-[0.3em]">Module Index {qIdx + 1}/{module.quiz.length}</p>
                                                     </div>
                                                 </div>
-                                                <div className={`px-8 py-4 border rounded-full text-[10px] md:text-xs font-black uppercase tracking-widest w-full sm:w-auto text-center ${isDark ? 'bg-white/5 border-white/10 text-slate-400' : 'bg-white border-slate-200 shadow-sm text-slate-600'}`}>Current Accuracy: <span className="text-[var(--accent-lime)] ml-1">{score}</span></div>
+                                                <div className={`px-8 py-4 border rounded-full text-[10px] md:text-xs font-black uppercase tracking-widest w-full sm:w-auto text-center ${isDark ? 'bg-white/5 border-white/10 text-slate-400' : 'bg-white border-slate-200 shadow-sm text-slate-600'}`}>Accuracy: <span className="text-[var(--accent-lime)] ml-1 font-bold">{score}</span></div>
                                             </div>
                                             
-                                            <div className="space-y-10 md:space-y-16 text-left">
-                                                <h4 className={`quiz-title text-xl md:text-4xl font-bold tracking-tight leading-snug max-w-4xl text-left ${isDark ? 'text-white' : 'text-slate-800'}`}>{currentQuiz.q}</h4>
+                                            <div className="space-y-10 text-left">
+                                                <h4 className={`quiz-title text-xl md:text-4xl font-bold tracking-tight leading-snug w-full text-left ${isDark ? 'text-white' : 'text-slate-800'}`}>{currentQuiz.q}</h4>
                                                 <div className="grid grid-cols-1 gap-4 md:gap-6">
                                                     {currentQuiz.a.map((opt, i) => (
                                                         <button key={i} disabled={showResult} onClick={() => handleAnswer(i)} className={`btn-answer relative w-full text-center p-6 md:p-10 rounded-[28px] md:rounded-[40px] border-2 transition-all group overflow-hidden ${selected === i ? i === currentQuiz.ans ? 'border-[var(--accent-lime)] bg-[var(--accent-lime)]/10 text-[var(--accent-lime)]' : 'border-rose-500 bg-rose-500/10 text-rose-500' : showResult && i === currentQuiz.ans ? 'border-[var(--accent-lime)]/30 bg-[var(--accent-lime)]/5 text-slate-400' : isDark ? 'border-white/5 bg-white/5 hover:border-white/20 text-slate-400 hover:text-white' : 'border-slate-100 bg-slate-50 hover:bg-slate-100 text-slate-500 shadow-sm'}`}>
@@ -467,7 +476,7 @@
                                                 {showResult && (
                                                     <div className="flex justify-center sm:justify-end pt-10 animate-in slide-in-from-right-4">
                                                         <button onClick={nextQuestion} className={`btn-cinema relative w-full sm:w-auto px-14 md:px-20 py-5 md:py-8 font-black text-[10px] md:text-xs uppercase tracking-[0.3em] rounded-full hover:scale-105 active:scale-95 shadow-2xl transition-transform ${isDark ? 'bg-white text-black' : 'bg-slate-900 text-white'}`}>
-                                                            <span className="w-full text-center block px-4">
+                                                            <span className="w-full text-center block px-4 font-bold">
                                                                 {qIdx === module.quiz.length - 1 ? "FINISH MODULE" : "CONTINUE SEQUENCE"}
                                                             </span>
                                                         </button>
@@ -477,7 +486,7 @@
                                         </div>
                                     </div>
                                 ) : (
-                                    <div className={`border rounded-[35px] md:rounded-[60px] p-8 md:p-32 lg:p-40 text-center space-y-16 backdrop-blur-3xl staggered-entry ${isDark ? 'bg-white/5 border-white/5 shadow-2xl' : 'bg-white border-slate-200 shadow-2xl shadow-slate-200'}`}>
+                                    <div className={`border rounded-[35px] md:rounded-[60px] p-8 md:p-32 text-center space-y-16 backdrop-blur-3xl staggered-entry w-full ${isDark ? 'bg-white/5 border-white/5 shadow-2xl' : 'bg-white border-slate-200 shadow-2xl shadow-slate-200'}`}>
                                         <div className="relative inline-block">
                                             <div className={`absolute -inset-14 rounded-full blur-3xl opacity-30 ${isPassing ? 'bg-lime-500 animate-pulse' : 'bg-rose-500'}`}></div>
                                             <div className={`relative w-24 h-24 md:w-40 md:h-40 rounded-full flex items-center justify-center border-[3px] ${isPassing ? 'border-[var(--accent-lime)] text-[var(--accent-lime)]' : 'border-rose-500 text-rose-500'}`}><Icon name={isPassing ? "Zap" : "ShieldAlert"} size={80} /></div>
@@ -498,10 +507,10 @@
                                         <div className="flex flex-col sm:flex-row gap-4 md:gap-8 justify-center pt-10 max-w-xl mx-auto">
                                             <button onClick={resetModule} className={`btn-cinema relative flex-1 p-6 md:p-9 border rounded-full font-black text-[10px] md:text-xs uppercase tracking-[0.3em] transition-all flex items-center justify-center ${isDark ? 'border-white/10 text-slate-500 hover:text-white hover:bg-white/5' : 'border-slate-200 text-slate-400 hover:text-slate-900 hover:bg-slate-50 shadow-sm'}`}>
                                                 <div className="absolute left-6 md:left-9"><Icon name="RefreshCcw" size={18} /></div>
-                                                <span className="text-center w-full block px-8 text-center">RECALIBRATE</span>
+                                                <span className="text-center w-full block px-8">RECALIBRATE</span>
                                             </button>
                                             <button onClick={handleAcademyProgression} disabled={!isPassing} className={`btn-cinema relative flex-1 p-6 md:p-9 rounded-full font-black text-[10px] md:text-xs uppercase tracking-[0.3em] transition-all flex items-center justify-center ${isPassing ? 'bg-[var(--accent-lime)] text-black shadow-2xl shadow-lime-500/20' : 'bg-neutral-800 text-slate-700 opacity-20 cursor-not-allowed grayscale'}`}>
-                                                <span className="text-center w-full block px-8 text-center uppercase">Next Module</span>
+                                                <span className="text-center w-full block px-8 uppercase font-bold">Next Module</span>
                                                 {isPassing && <div className="absolute right-6 md:right-9"><Icon name="ArrowRight" size={18} /></div>}
                                             </button>
                                         </div>
@@ -523,4 +532,5 @@
     </script>
 </body>
 </html>
+
 
