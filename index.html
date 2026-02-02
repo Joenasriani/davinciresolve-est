@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>DaVinci Resolve Master Academy</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Outfit:wght@300;400;600;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root {
+            --bg-obsidian: #0a0a0c;
+            --accent-lime: #ccff00;
+            --transition-speed: 0.4s;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+            transition: background-color var(--transition-speed) ease;
+        }
+
+        .dark-theme { background-color: var(--bg-obsidian); color: #e2e2e2; }
+        .light-theme { background-color: #f8fafc; color: #0f172a; }
+
+        .font-cinema { font-family: 'Syncopate', sans-serif; }
+        
+        .grain-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url('https://grainy-gradients.vercel.app/noise.svg');
+            opacity: 0.04;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(15px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .staggered-entry {
+            animation: slideUp 0.6s cubic-bezier(0.2, 1, 0.3, 1) forwards;
+        }
+
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .custom-scrollbar::-webkit-scrollbar { width: 3px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+
+        .cert-glow {
+            box-shadow: 0 0 50px -10px rgba(204, 255, 0, 0.1);
+        }
+
+        .diagonal-bg {
+            position: absolute;
+            top: 0; right: 0;
+            width: 100%; height: 100%;
+            background: radial-gradient(circle at 90% 10%, rgba(204, 255, 0, 0.03) 0%, transparent 50%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        @media (max-height: 700px) {
+            .quiz-card { padding: 1.5rem !important; }
+            .quiz-title { font-size: 1.25rem !important; }
+            .btn-answer { padding: 0.75rem !important; font-size: 0.8rem !important; }
+        }
+    </style>
+</head>
+<body class="dark-theme">
+    <div class="grain-overlay"></div>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useCallback, useMemo } = React;
+
+        const ACADEMY_DATA = {
+            edit: {
+                icon: 'Scissors',
+                color: '#3b82f6',
+                modules: [
+                    {
+                        id: 1, title: "The Edit 1: Timeline Philosophy",
+                        content: "Mastering the narrative structure. Unlike vertical layering, Fusion's Edit page prioritizes horizontal signal flow and track hierarchy.",
+                        mentalModel: "The Blueprint: Visualizing the cut before the brush hits the canvas.",
+                        quiz: [
+                            { q: "What is the primary goal of the Edit page?", a: ["Color grading", "Narrative assembly and edit", "3D modeling", "Sound mixing"], ans: 1 },
+                            { q: "Standard Mac shortcut for the Blade tool?", a: ["Shift + B", "Option + B", "Cmd + Shift + B", "B activates / cmd + B cuts"], ans: 3 },
+                            { q: "What is a Ripple Delete?", a: ["Deleting a clip and leaving a gap", "Deleting only audio", "Deleting a clip and closing the gap automatically", "Deleting the whole timeline"], ans: 2 },
+                            { q: "Which key toggles Snapping on/off?", a: ["N", "S", "Cmd + N", "Shift + S"], ans: 0 },
+                            { q: "J, K, and L keys are used for?", a: ["Navigation (Reverse, Stop, Forward)", "Saving", "Cutting", "Exporting"], ans: 0 },
+                            { q: "What does the 'Inspector' do?", a: ["Shows project files", "Mixes audio", "Adjusts clip properties like Zoom and Position", "Adds metadata"], ans: 2 },
+                            { q: "A 'Gap' in the timeline is called?", a: ["Gap", "Empty space", "Void", "Black Hole"], ans: 0 },
+                            { q: "How do you zoom in/out of the timeline on a Mac?", a: ["Scroll only", "Cmd+ / Cmd-", "Pinch on trackpad", "Shift + Z"], ans: 1 },
+                            { q: "What is 'Overwriting' a clip?", a: ["Pushing other clips aside", "Deleting the timeline", "Placing it on top and replacing current footage", "Changing color"], ans: 2 },
+                            { q: "Standard frame rate for cinema?", a: ["24fps", "60fps", "30fps", "120fps"], ans: 0 }
+                        ]
+                    },
+                    { id: 2, title: "The Edit 2: Trim Mode Logic", content: "Precision manipulation of edit points using Slip, Slide, Roll, and Ripple commands.", mentalModel: "The Tailor: Shortening sleeves without ruining the fabric.", quiz: Array(10).fill({ q: "Identify the correct command for shifting all subsequent clips forward.", a: ["Ripple", "Roll", "Slide", "Slip"], ans: 0 }) },
+                    { id: 3, title: "The Edit 3: Media Architecture", content: "Advanced metadata organization and smart bin strategies for high-volume project management.", mentalModel: "The Librarian: Every pixel has a coordinate and a name.", quiz: Array(10).fill({ q: "What is the primary benefit of Smart Bins?", a: ["Automatic sorting by metadata", "Faster rendering", "3D conversion", "Audio sync"], ans: 0 }) },
+                    { id: 4, title: "The Edit 4: Delivery Standards", content: "Mastering the Deliver page and codec optimization for theater and web distribution.", mentalModel: "The Courier: Ensuring the message arrives in the correct format.", quiz: Array(10).fill({ q: "Which format is a common high-quality master standard?", a: ["ProRes 4444", "H.264 Low", "GIF", "MP3"], ans: 0 }) }
+                ]
+            },
+            color: {
+                icon: 'Palette',
+                color: '#14b8a6',
+                modules: [
+                    {
+                        id: 1, title: "The Color 1: Primary Correction",
+                        content: "The bedrock of cinematic depth. Balance exposure and white point before exploring creative HSL domains.",
+                        mentalModel: "The Laboratory: Cleaning the glass before conducting the experiment.",
+                        quiz: [
+                            { q: "First step in a professional grade?", a: ["Applying a creative LUT", "Masking the subject", "Balancing exposure and white balance", "Sharpening"], ans: 2 },
+                            { q: "Which scope shows brightness from left to right?", a: ["Vectorscope", "Histogram", "Parade", "Waveform"], ans: 3 },
+                            { q: "Lift affects which part of the image?", a: ["Shadows", "Highlights", "Midtones", "Saturation"], ans: 0 },
+                            { q: "Gain affects which part of the image?", a: ["Shadows", "Highlights", "Midtones", "Contrast"], ans: 1 },
+                            { q: "What does Gamma control?", a: ["Whites", "Blacks", "Noise", "Midtones"], ans: 3 },
+                            { q: "Shortcut for Serial Node (Mac)?", a: ["Cmd + S", "Shift + S", "Option + S", "Option + N"], ans: 2 },
+                            { q: "What is 'Clipping'?", a: ["Losing detail in highlights or shadows", "Adding a clip", "Cutting a scene", "Color matching"], ans: 0 },
+                            { q: "Neutral saturation value in Resolve?", a: ["100", "0", "200", "50"], ans: 3 },
+                            { q: "The 'Offset' wheel moves?", a: ["Only highlights", "The entire signal equally", "Only shadows", "Midtones"], ans: 1 },
+                            { q: "Temperature slider at a positive value adds?", a: ["Blue", "Green", "Warm / Orange", "Magenta"], ans: 2 }
+                        ]
+                    },
+                    { id: 2, title: "The Color 2: Node Topography", content: "Complex signal routing using Parallel, Layer, and Key Mixer nodes for surgical isolation.", mentalModel: "The Electrician: Routing light through specialized circuits.", quiz: Array(10).fill({ q: "Which node combines multiple keys without priority?", a: ["Parallel Mixer", "Layer Mixer", "Serial Node", "Outside Node"], ans: 0 }) },
+                    { id: 3, title: "The Color 3: RAW Digital Workflows", content: "Accessing camera sensor data directly for maximum dynamic range recovery.", mentalModel: "The Negative: Developing the digital film from scratch.", quiz: Array(10).fill({ q: "What attribute is uniquely available for RAW footage?", a: ["ISO and Color Temp", "Saturation", "Contrast", "H.264 bitrate"], ans: 0 }) },
+                    { id: 4, title: "The Color 4: HDR Mastery", content: "Grading for High Dynamic Range standards like Dolby Vision and HDR10.", mentalModel: "The Sun: Harnessing extreme brightness with control.", quiz: Array(10).fill({ q: "What is the unit of brightness measured in HDR?", a: ["Nits", "Watts", "Pixels", "Hertz"], ans: 0 }) }
+                ]
+            },
+            fairlight: {
+                icon: 'Music',
+                color: '#6366f1',
+                modules: [
+                    {
+                        id: 1, title: "The Fairlight 1: Audio Mixer",
+                        content: "Professional DAW logic. Routing signals via buses and mastering the frequency spectrum.",
+                        mentalModel: "The Orchestra: Every instrument has a home in the stereo image.",
+                        quiz: [
+                            { q: "What is Fairlight?", a: ["Color tool", "Text generator", "Professional DAW", "Export tool"], ans: 2 },
+                            { q: "What does a 'Bus' do?", a: ["Moves clips", "Deletes audio", "Adds reverb", "Groups audio signals for processing"], ans: 3 },
+                            { q: "Standard high-quality video sample rate?", a: ["48 kHz", "44.1 kHz", "96 kHz", "22 kHz"], ans: 0 },
+                            { q: "Normalizing audio adjusts?", a: ["Pitch", "Peaks to a target level", "Noise", "Duration"], ans: 1 },
+                            { q: "The Mixer panel controls?", a: ["Color", "VFX", "Volume and Panning", "Codecs"], ans: 2 },
+                            { q: "Panning places sound in which speakers?", a: ["Top / Bottom", "Front only", "Center only", "Left / Right"], ans: 3 },
+                            { q: "Waveform color in Fairlight is usually?", a: ["Gray / Green", "Blue", "Red", "Yellow"], ans: 0 },
+                            { q: "Tool for dialogue replacement?", a: ["VFX", "ADR", "Scopes", "Nodes"], ans: 1 },
+                            { q: "Fairlight track capacity?", a: ["Up to 10", "Only one", "Hundreds", "It depends on CPU"], ans: 2 },
+                            { q: "What is 'dB' short for?", a: ["Double Bass", "Data Bit", "Digital Bass", "Decibel"], ans: 3 }
+                        ]
+                    },
+                    { id: 2, title: "The Fairlight 2: Routing & Busing", content: "Managing complex audio paths for multi-track broadcast and cinema outputs.", mentalModel: "The Highway: Managing the flow of traffic across lanes.", quiz: Array(10).fill({ q: "Where do you route tracks to a submix?", a: ["Bus Assign", "Equalizer", "Media Pool", "Viewer"], ans: 0 }) },
+                    { id: 3, title: "The Fairlight 3: Dynamics & EQ", content: "Sculpting the frequency spectrum to ensure dialogue clarity and sonic impact.", mentalModel: "The Sculptor: Removing unnecessary frequencies to reveal the sound.", quiz: Array(10).fill({ q: "Which tool reduces high-volume peaks?", a: ["Compressor", "Gate", "Reverb", "Chorus"], ans: 0 }) },
+                    { id: 4, title: "The Fairlight 4: ADR & Dialogue", content: "Mastering Automated Dialogue Replacement and noise floor synchronization.", mentalModel: "The Double: Replacing the voice while keeping the emotion.", quiz: Array(10).fill({ q: "What does ADR stand for?", a: ["Automated Dialogue Replacement", "Audio Digital Reverb", "Advanced Digital Routing", "Active Dialogue Range"], ans: 0 }) }
+                ]
+            },
+            fusion: {
+                icon: 'Zap',
+                color: '#f59e0b',
+                modules: [
+                    {
+                        id: 1, title: "The Fusion 1: Node Logic",
+                        content: "Atomic operations connected by logic pipes. From MediaIn to MediaOut through specialized machines.",
+                        mentalModel: "Plumbing: Signal only flows if the connection is watertight.",
+                        quiz: [
+                            { q: "Fusion logic is based on?", a: ["Layers", "Nodes", "Tracks", "Scripting"], ans: 1 },
+                            { q: "Final output node in Fusion?", a: ["MediaIn", "Merge", "Render", "MediaOut"], ans: 3 },
+                            { q: "Signal flow direction?", a: ["Top to bottom", "Circular", "Left to right", "Right to left"], ans: 2 },
+                            { q: "Shortcut for tool search on Mac?", a: ["Shift + Space", "Cmd + F", "Cmd + T", "Option + S"], ans: 0 },
+                            { q: "A 'Merge' node combines what?", a: ["Colors", "Two signals (Foreground and Background)", "Audio files", "Export presets"], ans: 1 },
+                            { q: "Yellow input on a Merge node represents?", a: ["Foreground", "Mask", "Background", "Audio"], ans: 2 },
+                            { q: "Green input on a Merge node represents?", a: ["Background", "Mask", "3D", "Foreground"], ans: 3 },
+                            { q: "Blue input on any node is for?", a: ["Effect Mask", "Audio", "Foreground", "Output"], ans: 0 },
+                            { q: "View a node in the left viewer on Mac?", a: ["Press 2", "Press 1", "Drag it", "Double click"], ans: 1 },
+                            { q: "What does a red node indicate?", a: ["Selected", "Rendering", "Error or missing file", "Animation active"], ans: 2 }
+                        ]
+                    },
+                    { id: 2, title: "The Fusion 2: Spatial 3D", content: "Building environments in a true 3D workspace with lights, cameras, and depth.", mentalModel: "The Stage: Positioning actors and lights in physical space.", quiz: Array(10).fill({ q: "Which node is required to view a 3D scene in 2D?", a: ["Renderer3D", "Merge3D", "Camera3D", "MediaOut"], ans: 0 }) },
+                    { id: 3, title: "The Fusion 3: Tracking Science", content: "Mastering point, planar, and camera tracking for seamless element integration.", mentalModel: "The Magnet: Sticking digital objects to physical pixels.", quiz: Array(10).fill({ q: "Which tracker is best for flat screens?", a: ["Planar Tracker", "Point Tracker", "Camera Tracker", "Audio Tracker"], ans: 0 }) },
+                    { id: 4, title: "The Fusion 4: Particles & VFX", content: "Advanced physics simulations for dust, fire, rain, and procedural visual effects.", mentalModel: "The Atmosphere: Governing thousands of small elements with physics.", quiz: Array(10).fill({ q: "Which node starts a particle simulation?", a: ["pEmitter", "pRender", "pFlock", "pTurbulence"], ans: 0 }) }
+                ]
+            }
+        };
+
+        const Icon = ({ name, size = 20, className = "" }) => {
+            useEffect(() => {
+                if (window.lucide) window.lucide.createIcons();
+            }, [name]);
+            return <i data-lucide={name.toLowerCase()} style={{ width: size, height: size }} className={`inline-block shrink-0 ${className}`}></i>;
+        };
+
+        const CelebrationPage = ({ reset, isDark }) => {
+            useEffect(() => {
+                const duration = 6000;
+                const animationEnd = Date.now() + duration;
+                const interval = setInterval(function() {
+                    const timeLeft = animationEnd - Date.now();
+                    if (timeLeft <= 0) return clearInterval(interval);
+                    confetti({ particleCount: 25, spread: 90, origin: { y: 0.7 }, colors: ['#ccff00', '#3b82f6', isDark ? '#ffffff' : '#000000'] });
+                }, 300);
+                return () => clearInterval(interval);
+            }, [isDark]);
+
+            return (
+                <div className="min-h-screen flex items-center justify-center px-4 py-12 staggered-entry text-left">
+                    <div className="diagonal-bg"></div>
+                    <div className="max-w-4xl w-full space-y-12">
+                        <div className="space-y-4">
+                            <h1 className={`text-4xl md:text-7xl lg:text-8xl font-black font-cinema tracking-tighter leading-none text-left ${isDark ? 'text-white' : 'text-slate-900'}`}>ACADEMY<br/><span className="text-[var(--accent-lime)]">MASTERED</span></h1>
+                            <p className={`${isDark ? 'text-slate-500' : 'text-slate-400'} font-medium text-sm md:text-lg tracking-widest uppercase text-left`}>Logic Verified • 480 Points • Grade A</p>
+                        </div>
+                        <div className={`${isDark ? 'bg-white/5 border-white/10' : 'bg-white border-slate-200 shadow-2xl shadow-slate-200/50'} border rounded-[30px] md:rounded-[50px] p-6 md:p-16 lg:p-24 relative overflow-hidden backdrop-blur-3xl cert-glow`}>
+                            <div className="space-y-12 text-left">
+                                <div className="space-y-4">
+                                    <div className={`font-cinema text-[8px] md:text-[10px] tracking-[0.5em] ${isDark ? 'text-slate-500' : 'text-slate-400'} uppercase`}>Universal Logic Credential</div>
+                                    <div className={`text-2xl md:text-5xl lg:text-6xl font-black italic tracking-tight underline decoration-[var(--accent-lime)] underline-offset-8 ${isDark ? 'text-white' : 'text-slate-900'}`}>Post-Production Master</div>
+                                </div>
+                                <div className={`pt-10 flex flex-col items-center justify-center border-t ${isDark ? 'border-white/5' : 'border-slate-100'} gap-8`}>
+                                    <div className="text-center">
+                                        <div className={`text-[7px] font-black uppercase tracking-[0.3em] mb-1 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>Prepared By</div>
+                                        <div className={`text-[10px] md:text-xs font-bold uppercase tracking-[0.2em] opacity-80 ${isDark ? 'text-white' : 'text-slate-900'}`}>Joe Nasr</div>
+                                    </div>
+                                    <button onClick={reset} className="btn-cinema w-full md:w-auto px-10 md:px-16 py-4 md:py-6 bg-[var(--accent-lime)] text-black font-black text-[9px] md:text-xs uppercase tracking-[0.2em] rounded-full hover:scale-105 active:scale-95 transition-transform shadow-xl shadow-lime-500/20 text-center text-center">Restart Journey</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div className={`font-cinema text-[8px] md:text-[9px] tracking-[1em] text-left uppercase ${isDark ? 'text-slate-800' : 'text-slate-300'}`}>UAE • SHARJAH • 2026</div>
+                    </div>
+                </div>
+            );
+        };
+
+        const App = () => {
+            const [isDark, setIsDark] = useState(true);
+            const [activeTab, setActiveTab] = useState('edit');
+            const [currentModuleIdx, setCurrentModuleIdx] = useState(0);
+            const [qIdx, setQIdx] = useState(0);
+            const [selected, setSelected] = useState(null);
+            const [showResult, setShowResult] = useState(false);
+            const [score, setScore] = useState(0);
+            const [isCompleted, setIsCompleted] = useState(false);
+            const [isMenuOpen, setIsMenuOpen] = useState(false);
+            const [isAcademyFinished, setIsAcademyFinished] = useState(false);
+            const [passedModules, setPassedModules] = useState({ edit: [], color: [], fairlight: [], fusion: [] });
+
+            useEffect(() => {
+                document.body.className = isDark ? 'dark-theme' : 'light-theme';
+            }, [isDark]);
+
+            const activeAcademy = useMemo(() => ACADEMY_DATA[activeTab], [activeTab]);
+            const module = useMemo(() => activeAcademy.modules[currentModuleIdx] || activeAcademy.modules[0], [activeAcademy, currentModuleIdx]);
+            const currentQuiz = useMemo(() => module.quiz[qIdx] || module.quiz[0], [module, qIdx]);
+            const isPassing = score >= 8;
+
+            const isModuleUnlocked = useCallback((tab, idx) => {
+                if (tab === 'edit' && idx === 0) return true;
+                const tabs = ['edit', 'color', 'fairlight', 'fusion'];
+                if (idx === 0) {
+                    const prevTabIdx = tabs.indexOf(tab) - 1;
+                    if (prevTabIdx < 0) return true;
+                    const prevTab = tabs[prevTabIdx];
+                    const prevTabModules = ACADEMY_DATA[prevTab].modules;
+                    return passedModules[prevTab].includes(prevTabModules.length - 1);
+                }
+                return passedModules[tab].includes(idx - 1);
+            }, [passedModules]);
+
+            const handleAnswer = (idx) => {
+                if (showResult) return;
+                setSelected(idx);
+                setShowResult(true);
+                if (idx === currentQuiz.ans) setScore(prev => prev + 1);
+            };
+
+            const nextQuestion = () => {
+                if (qIdx < module.quiz.length - 1) {
+                    setQIdx(prev => prev + 1);
+                    setSelected(null);
+                    setShowResult(false);
+                } else {
+                    setIsCompleted(true);
+                }
+            };
+
+            const resetModule = () => {
+                setQIdx(0);
+                setSelected(null);
+                setShowResult(false);
+                setScore(0);
+                setIsCompleted(false);
+                setIsMenuOpen(false);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            };
+
+            const switchTab = (tab) => {
+                setActiveTab(tab);
+                setCurrentModuleIdx(0);
+                resetModule();
+            };
+
+            const handleAcademyProgression = () => {
+                if (!isPassing) return;
+                setPassedModules(prev => ({ ...prev, [activeTab]: [...new Set([...prev[activeTab], currentModuleIdx])] }));
+                const tabs = ['edit', 'color', 'fairlight', 'fusion'];
+                const currentTabIdx = tabs.indexOf(activeTab);
+                if (currentModuleIdx < activeAcademy.modules.length - 1) {
+                    setCurrentModuleIdx(prev => prev + 1);
+                    resetModule();
+                } else if (currentTabIdx < tabs.length - 1) {
+                    switchTab(tabs[currentTabIdx + 1]);
+                } else {
+                    setIsAcademyFinished(true);
+                }
+            };
+
+            if (isAcademyFinished) return <CelebrationPage reset={() => { setIsAcademyFinished(false); setPassedModules({ edit: [], color: [], fairlight: [], fusion: [] }); switchTab('edit'); }} isDark={isDark} />;
+
+            return (
+                <div className={`min-h-screen px-4 py-6 md:p-12 lg:px-20 transition-colors duration-500 relative`}>
+                    <div className="diagonal-bg"></div>
+                    
+                    <div className="fixed top-4 right-4 md:top-8 md:right-12 lg:right-20 z-[110]">
+                        <button 
+                            onClick={() => setIsDark(!isDark)}
+                            className={`p-3 md:p-4 rounded-full border transition-all hover:scale-110 active:scale-95 ${isDark ? 'bg-white/5 border-white/10 text-white' : 'bg-white border-slate-200 text-slate-900 shadow-xl'}`}
+                        >
+                            <Icon name={isDark ? "Sun" : "Moon"} size={16} />
+                        </button>
+                    </div>
+
+                    <div className="max-w-screen-2xl mx-auto space-y-8 md:space-y-16">
+                        
+                        <header className={`flex flex-col items-start gap-6 border-l pl-6 md:pl-12 staggered-entry ${isDark ? 'border-white/10' : 'border-slate-200'}`}>
+                            <div className="space-y-2 text-left w-full tracking-tighter">
+                                <h1 className={`text-2xl md:text-5xl lg:text-7xl font-black font-cinema uppercase leading-none ${isDark ? 'text-white' : 'text-slate-900'}`}>DAVINCI MASTER ACADEMY</h1>
+                                <div className="flex justify-between items-center w-full">
+                                    <p className={`font-bold uppercase tracking-widest text-[7px] md:text-[11px] ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>Certification Path • 480 Validation Points</p>
+                                    <button onClick={() => setIsMenuOpen(!isMenuOpen)} className={`lg:hidden p-2 rounded-full border ${isDark ? 'bg-white/5 border-white/10 text-white' : 'bg-white border-slate-200 text-slate-900'}`}>
+                                        <Icon name={isMenuOpen ? "X" : "Menu"} size={18} />
+                                    </button>
+                                </div>
+                            </div>
+                            <nav className={`flex p-1 rounded-2xl border overflow-x-auto whitespace-nowrap scrollbar-hide w-full md:w-auto ${isDark ? 'bg-white/5 border-white/5 shadow-2xl' : 'bg-white border-slate-100 shadow-lg shadow-slate-200'}`}>
+                                {Object.keys(ACADEMY_DATA).map((tab) => {
+                                    const unlocked = isModuleUnlocked(tab, 0);
+                                    const isActive = activeTab === tab;
+                                    return (
+                                        <button key={tab} disabled={!unlocked} onClick={() => switchTab(tab)} className={`flex items-center gap-2 px-5 md:px-10 py-3 md:py-5 rounded-xl text-[9px] md:text-xs font-black uppercase tracking-tighter transition-all ${isActive ? 'bg-[var(--accent-lime)] text-black shadow-lg shadow-lime-500/20' : unlocked ? (isDark ? 'text-slate-500 hover:text-white' : 'text-slate-400 hover:text-slate-900') : 'opacity-30 cursor-not-allowed grayscale'}`}>
+                                            <Icon name={unlocked ? ACADEMY_DATA[tab].icon : 'Lock'} size={14} /> {tab}
+                                        </button>
+                                    );
+                                })}
+                            </nav>
+                        </header>
+
+                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 relative items-start">
+                            <aside className={`lg:col-span-3 space-y-8 fixed inset-0 z-105 p-8 lg:relative lg:p-0 lg:bg-transparent lg:block ${isMenuOpen ? 'block' : 'hidden'} ${isDark ? 'bg-[var(--bg-obsidian)]' : 'bg-slate-50'}`}>
+                                <div className="flex justify-between items-center mb-8 lg:hidden">
+                                    <h2 className={`text-[10px] font-black uppercase tracking-widest font-cinema ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>Syllabus</h2>
+                                    <button onClick={() => setIsMenuOpen(false)}><Icon name="X" size={24} /></button>
+                                </div>
+                                <h2 className={`hidden lg:block font-cinema text-[9px] md:text-[11px] font-black uppercase tracking-[0.4em] mb-6 text-left ${isDark ? 'text-slate-700' : 'text-slate-300'}`}>Path Syllabus</h2>
+                                <div className="space-y-3 max-h-[60vh] lg:max-h-[70vh] overflow-y-auto pr-3 custom-scrollbar">
+                                    {activeAcademy.modules.map((m, idx) => {
+                                        const unlocked = isModuleUnlocked(activeTab, idx);
+                                        const isPassed = passedModules[activeTab].includes(idx);
+                                        const isCurrent = currentModuleIdx === idx;
+                                        return (
+                                            <button key={m.id} disabled={!unlocked} onClick={() => { setCurrentModuleIdx(idx); resetModule(); }} className={`w-full text-left p-4 md:p-6 rounded-[24px] flex items-center gap-4 transition-all border ${isCurrent ? (isDark ? 'bg-white/5 border-[var(--accent-lime)]/40 shadow-lime-500/10 shadow-lg' : 'bg-white border-[var(--accent-lime)] shadow-xl shadow-slate-200') : unlocked ? (isDark ? 'border-transparent hover:bg-white/5 text-slate-300' : 'border-transparent hover:bg-white text-slate-600') : 'opacity-40 border-transparent cursor-not-allowed text-zinc-500'}`}>
+                                                <span className={`text-[10px] md:text-[11px] font-black w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-2xl shrink-0 ${isCurrent ? 'bg-[var(--accent-lime)] text-black' : isPassed ? 'bg-emerald-500/20 text-emerald-400' : (isDark ? 'bg-white/5 text-slate-500' : 'bg-slate-100 text-slate-400')}`}>
+                                                    {isPassed ? <Icon name="Check" size={14} /> : unlocked ? idx + 1 : <Icon name="Lock" size={12} />}
+                                                </span>
+                                                <span className={`text-[11px] md:text-[13px] font-bold truncate uppercase tracking-tighter text-left ${isDark ? (isCurrent ? 'text-white' : 'text-slate-400') : (isCurrent ? 'text-slate-900' : 'text-slate-500')}`}>{m.title}</span>
+                                            </button>
+                                        );
+                                    })}
+                                </div>
+                            </aside>
+
+                            <main className="lg:col-span-9 space-y-6 md:space-y-12 text-left">
+                                {!isCompleted ? (
+                                    <div key={`${activeTab}-${currentModuleIdx}-${qIdx}`} className={`quiz-card border rounded-[35px] md:rounded-[60px] p-6 md:p-16 lg:p-24 space-y-12 md:space-y-20 backdrop-blur-3xl staggered-entry ${isDark ? 'bg-white/5 border-white/10 shadow-2xl' : 'bg-white border-slate-200 shadow-2xl shadow-slate-200/50'}`}>
+                                        <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 md:gap-20 text-left">
+                                            <section className="space-y-6 md:space-y-10">
+                                                <div className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-full border text-[8px] md:text-[10px] font-black uppercase tracking-widest ${isDark ? 'bg-white/5 border-white/10 text-slate-400' : 'bg-slate-50 border-slate-100 text-slate-500'}`}><Icon name="Zap" size={12} /> Logic Node {currentModuleIdx + 1}</div>
+                                                <h2 className={`text-3xl md:text-6xl lg:text-7xl font-black leading-[0.9] tracking-tighter uppercase font-cinema text-left ${isDark ? 'text-white' : 'text-slate-900'}`}>{module.title}</h2>
+                                                <p className={`text-base md:text-xl font-medium leading-relaxed max-w-xl text-left ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>{module.content}</p>
+                                            </section>
+                                            <section className={`rounded-[30px] p-8 md:p-12 border-l-[3px] border-[var(--accent-lime)] space-y-8 self-start ${isDark ? 'bg-white/5 shadow-inner' : 'bg-slate-50 shadow-sm'}`}>
+                                                <div className="flex items-center gap-4 text-[var(--accent-lime)]"><Icon name="Eye" size={22} /><h3 className="font-cinema text-[10px] md:text-[12px] font-black uppercase tracking-[0.3em]">Mental Model</h3></div>
+                                                <p className={`text-lg md:text-2xl font-medium leading-relaxed italic underline underline-offset-[12px] text-left ${isDark ? 'text-slate-100 decoration-white/10' : 'text-slate-700 decoration-slate-200'}`}>{module.mentalModel}</p>
+                                            </section>
+                                        </div>
+                                        
+                                        <div className={`pt-12 md:pt-24 border-t space-y-10 md:space-y-20 ${isDark ? 'border-white/5' : 'border-slate-100'}`}>
+                                            <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
+                                                <div className="flex items-center gap-5 text-left w-full sm:w-auto">
+                                                    <div className={`w-12 h-12 md:w-16 md:h-16 rounded-full flex items-center justify-center border ${isDark ? 'bg-white/5 border-white/10 text-slate-400' : 'bg-slate-50 border-slate-200 text-slate-600'}`}><Icon name="Scan" size={24} /></div>
+                                                    <div>
+                                                        <h3 className={`font-black uppercase tracking-widest text-xs md:text-sm ${isDark ? 'text-white' : 'text-slate-900'}`}>Logic Validation</h3>
+                                                        <p className="text-[8px] md:text-[11px] text-slate-500 uppercase tracking-[0.3em]">Module Index {qIdx + 1}/{module.quiz.length}</p>
+                                                    </div>
+                                                </div>
+                                                <div className={`px-8 py-4 border rounded-full text-[10px] md:text-xs font-black uppercase tracking-widest w-full sm:w-auto text-center ${isDark ? 'bg-white/5 border-white/10 text-slate-400' : 'bg-white border-slate-200 shadow-sm text-slate-600'}`}>Current Accuracy: <span className="text-[var(--accent-lime)] ml-1">{score}</span></div>
+                                            </div>
+                                            
+                                            <div className="space-y-10 md:space-y-16 text-left">
+                                                <h4 className={`quiz-title text-xl md:text-4xl font-bold tracking-tight leading-snug max-w-4xl text-left ${isDark ? 'text-white' : 'text-slate-800'}`}>{currentQuiz.q}</h4>
+                                                <div className="grid grid-cols-1 gap-4 md:gap-6">
+                                                    {currentQuiz.a.map((opt, i) => (
+                                                        <button key={i} disabled={showResult} onClick={() => handleAnswer(i)} className={`btn-answer text-left p-6 md:p-10 rounded-[28px] md:rounded-[40px] border-2 transition-all group relative overflow-hidden ${selected === i ? i === currentQuiz.ans ? 'border-[var(--accent-lime)] bg-[var(--accent-lime)]/10 text-[var(--accent-lime)]' : 'border-rose-500 bg-rose-500/10 text-rose-500' : showResult && i === currentQuiz.ans ? 'border-[var(--accent-lime)]/30 bg-[var(--accent-lime)]/5 text-slate-400' : isDark ? 'border-white/5 bg-white/5 hover:border-white/20 text-slate-400 hover:text-white' : 'border-slate-100 bg-slate-50 hover:bg-slate-100 text-slate-500 shadow-sm'}`}>
+                                                            <div className="flex items-center justify-between gap-6 text-left">
+                                                                <span className="font-cinema text-[10px] md:text-sm font-normal uppercase">{opt}</span>
+                                                                {showResult && i === currentQuiz.ans && <Icon name="CheckCircle" size={22} />}
+                                                                {showResult && selected === i && i !== currentQuiz.ans && <Icon name="XCircle" size={22} />}
+                                                            </div>
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                                {showResult && (
+                                                    <div className="flex justify-center md:justify-end pt-10 animate-in slide-in-from-right-4">
+                                                        <button onClick={nextQuestion} className={`btn-cinema w-full sm:w-auto px-14 md:px-20 py-5 md:py-8 font-black text-[10px] md:text-xs uppercase tracking-[0.3em] rounded-full hover:scale-105 active:scale-95 shadow-2xl transition-transform ${isDark ? 'bg-white text-black' : 'bg-slate-900 text-white'}`}><span className="w-full text-center">{qIdx === module.quiz.length - 1 ? "FINISH MODULE" : "CONTINUE SEQUENCE"}</span></button>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className={`border rounded-[35px] md:rounded-[60px] p-8 md:p-32 lg:p-40 text-center space-y-16 backdrop-blur-3xl staggered-entry ${isDark ? 'bg-white/5 border-white/5 shadow-2xl' : 'bg-white border-slate-200 shadow-2xl shadow-slate-200'}`}>
+                                        <div className="relative inline-block">
+                                            <div className={`absolute -inset-14 rounded-full blur-3xl opacity-30 ${isPassing ? 'bg-lime-500 animate-pulse' : 'bg-rose-500'}`}></div>
+                                            <div className={`relative w-24 h-24 md:w-40 md:h-40 rounded-full flex items-center justify-center border-[3px] ${isPassing ? 'border-[var(--accent-lime)] text-[var(--accent-lime)]' : 'border-rose-500 text-rose-500'}`}><Icon name={isPassing ? "Zap" : "ShieldAlert"} size={80} /></div>
+                                        </div>
+                                        <div className="space-y-6 text-center">
+                                            <h2 className={`text-4xl md:text-7xl lg:text-8xl font-black font-cinema uppercase tracking-tighter text-center leading-none ${isDark ? 'text-white' : 'text-slate-900'}`}>{isPassing ? "VALIDATED" : "FAILED"}</h2>
+                                            <p className={`text-lg md:text-2xl font-medium tracking-widest uppercase ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>Performance Logic: <span className={isDark ? 'text-white' : 'text-slate-900'}>{score} / 10</span>. {isPassing ? "System unlock confirmed." : "Recalibration required."}</p>
+                                        </div>
+                                        <div className="flex flex-col sm:flex-row gap-4 md:gap-8 justify-center pt-10 max-w-xl mx-auto">
+                                            <button onClick={resetModule} className={`btn-cinema flex-1 p-6 md:p-9 border rounded-full font-black text-[10px] md:text-xs uppercase tracking-[0.3em] transition-all flex items-center justify-center gap-4 ${isDark ? 'border-white/10 text-slate-500 hover:text-white hover:bg-white/5' : 'border-slate-200 text-slate-400 hover:text-slate-900 hover:bg-slate-50 shadow-sm'}`}><Icon name="RefreshCcw" size={18} /><span className="text-center">RECALIBRATE</span></button>
+                                            <button onClick={handleAcademyProgression} disabled={!isPassing} className={`btn-cinema flex-1 p-6 md:p-9 rounded-full font-black text-[10px] md:text-xs uppercase tracking-[0.3em] transition-all flex items-center justify-center gap-4 ${isPassing ? 'bg-[var(--accent-lime)] text-black shadow-2xl shadow-lime-500/20' : 'bg-neutral-800 text-slate-700 opacity-20 cursor-not-allowed grayscale'}`}><span className="text-center text-xs text-center uppercase">Next Module</span>{isPassing && <Icon name="ArrowRight" size={18} />}</button>
+                                        </div>
+                                    </div>
+                                )}
+                            </main>
+                        </div>
+                        
+                        <footer className={`mt-20 md:mt-40 pt-16 border-t text-center px-4 ${isDark ? 'border-white/5' : 'border-slate-100'}`}>
+                            <p className={`text-[7px] md:text-[10px] font-black uppercase tracking-[0.45em] leading-loose text-center ${isDark ? 'text-slate-600' : 'text-slate-400'}`}>PROFESSIONAL POST-PRODUCTION LOGIC • PREPARED BY JOE NASR • SAEDUBAI.COM • UAE</p>
+                        </footer>
+                    </div>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
+
+
