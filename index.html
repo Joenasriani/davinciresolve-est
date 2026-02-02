@@ -46,12 +46,22 @@
             to { transform: translateY(0); opacity: 1; }
         }
 
+        @keyframes slideDown {
+            from { transform: translateY(-100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
         .staggered-entry {
             animation: slideUp 0.6s cubic-bezier(0.2, 1, 0.3, 1) forwards;
         }
 
+        .notif-entry {
+            animation: slideDown 0.4s cubic-bezier(0.2, 1, 0.3, 1) forwards;
+        }
+
         .scrollbar-hide::-webkit-scrollbar { display: none; }
         .custom-scrollbar::-webkit-scrollbar { width: 3px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
 
         .cert-glow {
@@ -93,11 +103,11 @@
                         quiz: [
                             { q: "What is the primary goal of the Edit page?", a: ["Color grading", "Narrative assembly and edit", "3D modeling", "Sound mixing"], ans: 1 },
                             { q: "Standard Mac shortcut for the Blade tool?", a: ["Shift + B", "Option + B", "Cmd + Shift + B", "B activates / cmd + B cuts"], ans: 3 },
-                            { q: "What is a Ripple Delete?", a: ["Deleting a clip and leaving a gap", "Deleting only audio", "Deleting a clip and closing the gap automatically", "Deleting the whole timeline"], ans: 2 },
-                            { q: "Which key toggles Snapping on/off?", a: ["N", "S", "Cmd + N", "Shift + S"], ans: 0 },
+                            { q: "What is a Ripple Delete?", a: ["Deleting a clip and leaving a gap", "Deleting a clip and closing the gap automatically", "Deleting only audio", "Deleting the whole timeline"], ans: 1 },
+                            { q: "Which key toggles Snapping on/off?", a: ["S", "N", "Cmd + N", "Shift + S"], ans: 1 },
                             { q: "J, K, and L keys are used for?", a: ["Navigation (Reverse, Stop, Forward)", "Saving", "Cutting", "Exporting"], ans: 0 },
                             { q: "What does the 'Inspector' do?", a: ["Shows project files", "Mixes audio", "Adjusts clip properties like Zoom and Position", "Adds metadata"], ans: 2 },
-                            { q: "A 'Gap' in the timeline is called?", a: ["Gap", "Empty space", "Void", "Black Hole"], ans: 0 },
+                            { q: "A 'Gap' in the timeline is called?", a: ["Empty space", "Gap", "Void", "Black Hole"], ans: 1 },
                             { q: "How do you zoom in/out of the timeline on a Mac?", a: ["Scroll only", "Cmd+ / Cmd-", "Pinch on trackpad", "Shift + Z"], ans: 1 },
                             { q: "What is 'Overwriting' a clip?", a: ["Pushing other clips aside", "Deleting the timeline", "Placing it on top and replacing current footage", "Changing color"], ans: 2 },
                             { q: "Standard frame rate for cinema?", a: ["24fps", "60fps", "30fps", "120fps"], ans: 0 }
@@ -144,15 +154,15 @@
                         mentalModel: "The Orchestra: Every instrument has a home in the stereo image.",
                         quiz: [
                             { q: "What is Fairlight?", a: ["Color tool", "Text generator", "Professional DAW", "Export tool"], ans: 2 },
-                            { q: "What does a 'Bus' do?", a: ["Moves clips", "Deletes audio", "Adds reverb", "Groups audio signals for processing"], ans: 3 },
-                            { q: "Standard high-quality video sample rate?", a: ["48 kHz", "44.1 kHz", "96 kHz", "22 kHz"], ans: 0 },
+                            { q: "What does a 'Bus' do?", a: ["Moves clips", "Groups audio signals for processing", "Deletes audio", "Adds reverb"], ans: 1 },
+                            { q: "Standard high-quality video sample rate?", a: ["44.1 kHz", "48 kHz", "96 kHz", "22 kHz"], ans: 1 },
                             { q: "Normalizing audio adjusts?", a: ["Pitch", "Peaks to a target level", "Noise", "Duration"], ans: 1 },
-                            { q: "The Mixer panel controls?", a: ["Color", "VFX", "Volume and Panning", "Codecs"], ans: 2 },
-                            { q: "Panning places sound in which speakers?", a: ["Top / Bottom", "Front only", "Center only", "Left / Right"], ans: 3 },
-                            { q: "Waveform color in Fairlight is usually?", a: ["Gray / Green", "Blue", "Red", "Yellow"], ans: 0 },
-                            { q: "Tool for dialogue replacement?", a: ["VFX", "ADR", "Scopes", "Nodes"], ans: 1 },
-                            { q: "Fairlight track capacity?", a: ["Up to 10", "Only one", "Hundreds", "It depends on CPU"], ans: 2 },
-                            { q: "What is 'dB' short for?", a: ["Double Bass", "Data Bit", "Digital Bass", "Decibel"], ans: 3 }
+                            { q: "The Mixer panel controls?", a: ["Volume and Panning", "Color", "VFX", "Codecs"], ans: 0 },
+                            { q: "Panning places sound in which speakers?", a: ["Left / Right", "Top / Bottom", "Front only", "Center only"], ans: 0 },
+                            { q: "Waveform color in Fairlight is usually?", a: ["Blue", "Red", "Gray / Green", "Yellow"], ans: 2 },
+                            { q: "Tool for dialogue replacement?", a: ["ADR", "VFX", "Scopes", "Nodes"], ans: 0 },
+                            { q: "Fairlight track capacity?", a: ["Hundreds", "Up to 10", "Only one", "It depends on CPU"], ans: 0 },
+                            { q: "What is 'dB' short for?", a: ["Double Bass", "Decibel", "Data Bit", "Digital Bass"], ans: 1 }
                         ]
                     },
                     { id: 2, title: "The Fairlight 2: Routing & Busing", content: "Managing complex audio paths for multi-track broadcast and cinema outputs.", mentalModel: "The Highway: Managing the flow of traffic across lanes.", quiz: Array(10).fill({ q: "Where do you route tracks to a submix?", a: ["Bus Assign", "Equalizer", "Media Pool", "Viewer"], ans: 0 }) },
@@ -170,15 +180,15 @@
                         mentalModel: "Plumbing: Signal only flows if the connection is watertight.",
                         quiz: [
                             { q: "Fusion logic is based on?", a: ["Layers", "Nodes", "Tracks", "Scripting"], ans: 1 },
-                            { q: "Final output node in Fusion?", a: ["MediaIn", "Merge", "Render", "MediaOut"], ans: 3 },
-                            { q: "Signal flow direction?", a: ["Top to bottom", "Circular", "Left to right", "Right to left"], ans: 2 },
-                            { q: "Shortcut for tool search on Mac?", a: ["Shift + Space", "Cmd + F", "Cmd + T", "Option + S"], ans: 0 },
+                            { q: "Final output node in Fusion?", a: ["MediaIn", "MediaOut", "Merge", "Render"], ans: 1 },
+                            { q: "Signal flow direction?", a: ["Top to bottom", "Left to right", "Circular", "Right to left"], ans: 1 },
+                            { q: "Shortcut for tool search on Mac?", a: ["Cmd + F", "Shift + Space", "Cmd + T", "Option + S"], ans: 1 },
                             { q: "A 'Merge' node combines what?", a: ["Colors", "Two signals (Foreground and Background)", "Audio files", "Export presets"], ans: 1 },
-                            { q: "Yellow input on a Merge node represents?", a: ["Foreground", "Mask", "Background", "Audio"], ans: 2 },
-                            { q: "Green input on a Merge node represents?", a: ["Background", "Mask", "3D", "Foreground"], ans: 3 },
-                            { q: "Blue input on any node is for?", a: ["Effect Mask", "Audio", "Foreground", "Output"], ans: 0 },
-                            { q: "View a node in the left viewer on Mac?", a: ["Press 2", "Press 1", "Drag it", "Double click"], ans: 1 },
-                            { q: "What does a red node indicate?", a: ["Selected", "Rendering", "Error or missing file", "Animation active"], ans: 2 }
+                            { q: "Yellow input on a Merge node represents?", a: ["Foreground", "Background", "Mask", "Audio"], ans: 1 },
+                            { q: "Green input on a Merge node represents?", a: ["Foreground", "Background", "Mask", "3D"], ans: 0 },
+                            { q: "Blue input on any node is for?", a: ["Audio", "Effect Mask", "Foreground", "Output"], ans: 1 },
+                            { q: "View a node in the left viewer on Mac?", a: ["Press 1", "Press 2", "Drag it", "Double click"], ans: 0 },
+                            { q: "What does a red node indicate?", a: ["Selected", "Error or missing file", "Rendering", "Animation active"], ans: 1 }
                         ]
                     },
                     { id: 2, title: "The Fusion 2: Spatial 3D", content: "Building environments in a true 3D workspace with lights, cameras, and depth.", mentalModel: "The Stage: Positioning actors and lights in physical space.", quiz: Array(10).fill({ q: "Which node is required to view a 3D scene in 2D?", a: ["Renderer3D", "Merge3D", "Camera3D", "MediaOut"], ans: 0 }) },
@@ -226,7 +236,9 @@
                                         <div className={`text-[7px] font-black uppercase tracking-[0.3em] mb-1 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>Prepared By</div>
                                         <div className={`text-[10px] md:text-xs font-bold uppercase tracking-[0.2em] opacity-80 ${isDark ? 'text-white' : 'text-slate-900'}`}>Joe Nasr</div>
                                     </div>
-                                    <button onClick={reset} className="btn-cinema w-full md:w-auto px-10 md:px-16 py-4 md:py-6 bg-[var(--accent-lime)] text-black font-black text-[9px] md:text-xs uppercase tracking-[0.2em] rounded-full hover:scale-105 active:scale-95 transition-transform shadow-xl shadow-lime-500/20 text-center text-center">Restart Journey</button>
+                                    <button onClick={reset} className="btn-cinema relative w-full sm:w-auto px-10 md:px-16 py-4 md:py-6 bg-[var(--accent-lime)] text-black font-black text-[9px] md:text-xs uppercase tracking-[0.2em] rounded-full hover:scale-105 active:scale-95 transition-transform shadow-xl shadow-lime-500/20 flex items-center justify-center">
+                                        <span className="text-center w-full">Restart Journey</span>
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -248,10 +260,18 @@
             const [isMenuOpen, setIsMenuOpen] = useState(false);
             const [isAcademyFinished, setIsAcademyFinished] = useState(false);
             const [passedModules, setPassedModules] = useState({ edit: [], color: [], fairlight: [], fusion: [] });
+            const [notif, setNotif] = useState(null);
 
             useEffect(() => {
                 document.body.className = isDark ? 'dark-theme' : 'light-theme';
             }, [isDark]);
+
+            useEffect(() => {
+                if (notif) {
+                    const timer = setTimeout(() => setNotif(null), 3000);
+                    return () => clearTimeout(timer);
+                }
+            }, [notif]);
 
             const activeAcademy = useMemo(() => ACADEMY_DATA[activeTab], [activeTab]);
             const module = useMemo(() => activeAcademy.modules[currentModuleIdx] || activeAcademy.modules[0], [activeAcademy, currentModuleIdx]);
@@ -298,7 +318,15 @@
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             };
 
+            const triggerLockNotif = () => {
+                setNotif("PASS PREVIOUS MODULE TO UNLOCK.");
+            };
+
             const switchTab = (tab) => {
+                if (!isModuleUnlocked(tab, 0)) {
+                    triggerLockNotif();
+                    return;
+                }
                 setActiveTab(tab);
                 setCurrentModuleIdx(0);
                 resetModule();
@@ -325,10 +353,21 @@
                 <div className={`min-h-screen px-4 py-6 md:p-12 lg:px-20 transition-colors duration-500 relative`}>
                     <div className="diagonal-bg"></div>
                     
-                    <div className="fixed top-4 right-4 md:top-8 md:right-12 lg:right-20 z-[110]">
+                    {notif && (
+                        <div className="fixed top-0 left-0 w-full z-[9999] notif-entry">
+                            <div className="bg-black text-[var(--accent-lime)] border-b-2 border-[var(--accent-lime)] px-6 py-3 md:py-4 text-center shadow-2xl backdrop-blur-xl">
+                                <div className="flex items-center justify-center gap-4">
+                                    <Icon name="ShieldAlert" size={16} className="animate-pulse" />
+                                    <span className="font-cinema text-[10px] md:text-xs font-black uppercase tracking-[0.4em]">{notif}</span>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    <div className="fixed top-4 right-4 md:top-6 md:right-10 lg:right-12 z-[110]">
                         <button 
                             onClick={() => setIsDark(!isDark)}
-                            className={`p-3 md:p-4 rounded-full border transition-all hover:scale-110 active:scale-95 ${isDark ? 'bg-white/5 border-white/10 text-white' : 'bg-white border-slate-200 text-slate-900 shadow-xl'}`}
+                            className={`w-10 h-10 md:w-12 md:h-12 rounded-full border flex items-center justify-center transition-all hover:scale-110 active:scale-95 ${isDark ? 'bg-white/5 border-white/10 text-white' : 'bg-white border-slate-200 text-slate-900 shadow-lg'}`}
                         >
                             <Icon name={isDark ? "Sun" : "Moon"} size={16} />
                         </button>
@@ -337,7 +376,7 @@
                     <div className="max-w-screen-2xl mx-auto space-y-8 md:space-y-16">
                         
                         <header className={`flex flex-col items-start gap-6 border-l pl-6 md:pl-12 staggered-entry ${isDark ? 'border-white/10' : 'border-slate-200'}`}>
-                            <div className="space-y-2 text-left w-full tracking-tighter">
+                            <div className="space-y-2 text-left w-full tracking-tighter text-left">
                                 <h1 className={`text-2xl md:text-5xl lg:text-7xl font-black font-cinema uppercase leading-none ${isDark ? 'text-white' : 'text-slate-900'}`}>DAVINCI MASTER ACADEMY</h1>
                                 <div className="flex justify-between items-center w-full">
                                     <p className={`font-bold uppercase tracking-widest text-[7px] md:text-[11px] ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>Certification Path • 480 Validation Points</p>
@@ -351,7 +390,7 @@
                                     const unlocked = isModuleUnlocked(tab, 0);
                                     const isActive = activeTab === tab;
                                     return (
-                                        <button key={tab} disabled={!unlocked} onClick={() => switchTab(tab)} className={`flex items-center gap-2 px-5 md:px-10 py-3 md:py-5 rounded-xl text-[9px] md:text-xs font-black uppercase tracking-tighter transition-all ${isActive ? 'bg-[var(--accent-lime)] text-black shadow-lg shadow-lime-500/20' : unlocked ? (isDark ? 'text-slate-500 hover:text-white' : 'text-slate-400 hover:text-slate-900') : 'opacity-30 cursor-not-allowed grayscale'}`}>
+                                        <button key={tab} onClick={() => switchTab(tab)} className={`flex items-center justify-center gap-2 px-5 md:px-10 py-3 md:py-5 rounded-xl text-[9px] md:text-xs font-black uppercase tracking-tighter transition-all ${isActive ? 'bg-[var(--accent-lime)] text-black shadow-lg shadow-lime-500/20' : unlocked ? (isDark ? 'text-slate-500 hover:text-white' : 'text-slate-400 hover:text-slate-900') : 'opacity-30 grayscale'}`}>
                                             <Icon name={unlocked ? ACADEMY_DATA[tab].icon : 'Lock'} size={14} /> {tab}
                                         </button>
                                     );
@@ -360,8 +399,8 @@
                         </header>
 
                         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 relative items-start">
-                            <aside className={`lg:col-span-3 space-y-8 fixed inset-0 z-105 p-8 lg:relative lg:p-0 lg:bg-transparent lg:block ${isMenuOpen ? 'block' : 'hidden'} ${isDark ? 'bg-[var(--bg-obsidian)]' : 'bg-slate-50'}`}>
-                                <div className="flex justify-between items-center mb-8 lg:hidden">
+                            <aside className={`lg:col-span-3 space-y-8 fixed inset-0 z-[200] p-8 lg:relative lg:p-0 lg:bg-transparent lg:block ${isMenuOpen ? 'block' : 'hidden'} ${isDark ? 'bg-[var(--bg-obsidian)]' : 'bg-slate-50'}`}>
+                                <div className="flex justify-between items-center mb-8 lg:hidden text-left text-left">
                                     <h2 className={`text-[10px] font-black uppercase tracking-widest font-cinema ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>Syllabus</h2>
                                     <button onClick={() => setIsMenuOpen(false)}><Icon name="X" size={24} /></button>
                                 </div>
@@ -372,11 +411,13 @@
                                         const isPassed = passedModules[activeTab].includes(idx);
                                         const isCurrent = currentModuleIdx === idx;
                                         return (
-                                            <button key={m.id} disabled={!unlocked} onClick={() => { setCurrentModuleIdx(idx); resetModule(); }} className={`w-full text-left p-4 md:p-6 rounded-[24px] flex items-center gap-4 transition-all border ${isCurrent ? (isDark ? 'bg-white/5 border-[var(--accent-lime)]/40 shadow-lime-500/10 shadow-lg' : 'bg-white border-[var(--accent-lime)] shadow-xl shadow-slate-200') : unlocked ? (isDark ? 'border-transparent hover:bg-white/5 text-slate-300' : 'border-transparent hover:bg-white text-slate-600') : 'opacity-40 border-transparent cursor-not-allowed text-zinc-500'}`}>
-                                                <span className={`text-[10px] md:text-[11px] font-black w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-2xl shrink-0 ${isCurrent ? 'bg-[var(--accent-lime)] text-black' : isPassed ? 'bg-emerald-500/20 text-emerald-400' : (isDark ? 'bg-white/5 text-slate-500' : 'bg-slate-100 text-slate-400')}`}>
-                                                    {isPassed ? <Icon name="Check" size={14} /> : unlocked ? idx + 1 : <Icon name="Lock" size={12} />}
-                                                </span>
-                                                <span className={`text-[11px] md:text-[13px] font-bold truncate uppercase tracking-tighter text-left ${isDark ? (isCurrent ? 'text-white' : 'text-slate-400') : (isCurrent ? 'text-slate-900' : 'text-slate-500')}`}>{m.title}</span>
+                                            <button key={m.id} onClick={() => { if (unlocked) { setCurrentModuleIdx(idx); resetModule(); } else triggerLockNotif(); }} className={`w-full p-4 md:p-6 rounded-[24px] flex items-center justify-center gap-4 transition-all border ${isCurrent ? (isDark ? 'bg-white/5 border-[var(--accent-lime)]/40 shadow-lime-500/10 shadow-lg' : 'bg-white border-[var(--accent-lime)] shadow-xl shadow-slate-200') : unlocked ? (isDark ? 'border-transparent hover:bg-white/5 text-slate-300' : 'border-transparent hover:bg-white text-slate-600') : 'opacity-40 border-transparent text-zinc-500'}`}>
+                                                <div className="flex items-center gap-4 w-full">
+                                                    <span className={`text-[10px] md:text-[11px] font-black w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-2xl shrink-0 ${isCurrent ? 'bg-[var(--accent-lime)] text-black' : isPassed ? 'bg-emerald-500/20 text-emerald-400' : (isDark ? 'bg-white/5 text-slate-500' : 'bg-slate-100 text-slate-400')}`}>
+                                                        {isPassed ? <Icon name="Check" size={14} /> : unlocked ? idx + 1 : <Icon name="Lock" size={12} />}
+                                                    </span>
+                                                    <span className={`text-[11px] md:text-[13px] font-bold truncate uppercase tracking-tighter text-left flex-1 ${isDark ? (isCurrent ? 'text-white' : 'text-slate-400') : (isCurrent ? 'text-slate-900' : 'text-slate-500')}`}>{m.title}</span>
+                                                </div>
                                             </button>
                                         );
                                     })}
@@ -385,7 +426,7 @@
 
                             <main className="lg:col-span-9 space-y-6 md:space-y-12 text-left">
                                 {!isCompleted ? (
-                                    <div key={`${activeTab}-${currentModuleIdx}-${qIdx}`} className={`quiz-card border rounded-[35px] md:rounded-[60px] p-6 md:p-16 lg:p-24 space-y-12 md:space-y-20 backdrop-blur-3xl staggered-entry ${isDark ? 'bg-white/5 border-white/10 shadow-2xl' : 'bg-white border-slate-200 shadow-2xl shadow-slate-200/50'}`}>
+                                    <div key={`${activeTab}-${currentModuleIdx}-${qIdx}`} className={`quiz-card border rounded-[35px] md:rounded-[60px] p-6 md:p-16 lg:p-24 space-y-12 md:space-y-20 backdrop-blur-3xl staggered-entry ${isDark ? 'bg-white/5 border-white/5 shadow-2xl' : 'bg-white border-slate-200 shadow-2xl shadow-slate-200/50'}`}>
                                         <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 md:gap-20 text-left">
                                             <section className="space-y-6 md:space-y-10">
                                                 <div className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-full border text-[8px] md:text-[10px] font-black uppercase tracking-widest ${isDark ? 'bg-white/5 border-white/10 text-slate-400' : 'bg-slate-50 border-slate-100 text-slate-500'}`}><Icon name="Zap" size={12} /> Logic Node {currentModuleIdx + 1}</div>
@@ -399,7 +440,7 @@
                                         </div>
                                         
                                         <div className={`pt-12 md:pt-24 border-t space-y-10 md:space-y-20 ${isDark ? 'border-white/5' : 'border-slate-100'}`}>
-                                            <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
+                                            <div className="flex flex-col sm:flex-row items-center justify-between gap-6 text-left">
                                                 <div className="flex items-center gap-5 text-left w-full sm:w-auto">
                                                     <div className={`w-12 h-12 md:w-16 md:h-16 rounded-full flex items-center justify-center border ${isDark ? 'bg-white/5 border-white/10 text-slate-400' : 'bg-slate-50 border-slate-200 text-slate-600'}`}><Icon name="Scan" size={24} /></div>
                                                     <div>
@@ -414,9 +455,9 @@
                                                 <h4 className={`quiz-title text-xl md:text-4xl font-bold tracking-tight leading-snug max-w-4xl text-left ${isDark ? 'text-white' : 'text-slate-800'}`}>{currentQuiz.q}</h4>
                                                 <div className="grid grid-cols-1 gap-4 md:gap-6">
                                                     {currentQuiz.a.map((opt, i) => (
-                                                        <button key={i} disabled={showResult} onClick={() => handleAnswer(i)} className={`btn-answer text-left p-6 md:p-10 rounded-[28px] md:rounded-[40px] border-2 transition-all group relative overflow-hidden ${selected === i ? i === currentQuiz.ans ? 'border-[var(--accent-lime)] bg-[var(--accent-lime)]/10 text-[var(--accent-lime)]' : 'border-rose-500 bg-rose-500/10 text-rose-500' : showResult && i === currentQuiz.ans ? 'border-[var(--accent-lime)]/30 bg-[var(--accent-lime)]/5 text-slate-400' : isDark ? 'border-white/5 bg-white/5 hover:border-white/20 text-slate-400 hover:text-white' : 'border-slate-100 bg-slate-50 hover:bg-slate-100 text-slate-500 shadow-sm'}`}>
-                                                            <div className="flex items-center justify-between gap-6 text-left">
-                                                                <span className="font-cinema text-[10px] md:text-sm font-normal uppercase">{opt}</span>
+                                                        <button key={i} disabled={showResult} onClick={() => handleAnswer(i)} className={`btn-answer relative w-full text-center p-6 md:p-10 rounded-[28px] md:rounded-[40px] border-2 transition-all group overflow-hidden ${selected === i ? i === currentQuiz.ans ? 'border-[var(--accent-lime)] bg-[var(--accent-lime)]/10 text-[var(--accent-lime)]' : 'border-rose-500 bg-rose-500/10 text-rose-500' : showResult && i === currentQuiz.ans ? 'border-[var(--accent-lime)]/30 bg-[var(--accent-lime)]/5 text-slate-400' : isDark ? 'border-white/5 bg-white/5 hover:border-white/20 text-slate-400 hover:text-white' : 'border-slate-100 bg-slate-50 hover:bg-slate-100 text-slate-500 shadow-sm'}`}>
+                                                            <span className="font-cinema text-[10px] md:text-sm font-normal uppercase block w-full">{opt}</span>
+                                                            <div className="absolute right-6 top-1/2 -translate-y-1/2">
                                                                 {showResult && i === currentQuiz.ans && <Icon name="CheckCircle" size={22} />}
                                                                 {showResult && selected === i && i !== currentQuiz.ans && <Icon name="XCircle" size={22} />}
                                                             </div>
@@ -424,8 +465,12 @@
                                                     ))}
                                                 </div>
                                                 {showResult && (
-                                                    <div className="flex justify-center md:justify-end pt-10 animate-in slide-in-from-right-4">
-                                                        <button onClick={nextQuestion} className={`btn-cinema w-full sm:w-auto px-14 md:px-20 py-5 md:py-8 font-black text-[10px] md:text-xs uppercase tracking-[0.3em] rounded-full hover:scale-105 active:scale-95 shadow-2xl transition-transform ${isDark ? 'bg-white text-black' : 'bg-slate-900 text-white'}`}><span className="w-full text-center">{qIdx === module.quiz.length - 1 ? "FINISH MODULE" : "CONTINUE SEQUENCE"}</span></button>
+                                                    <div className="flex justify-center sm:justify-end pt-10 animate-in slide-in-from-right-4">
+                                                        <button onClick={nextQuestion} className={`btn-cinema relative w-full sm:w-auto px-14 md:px-20 py-5 md:py-8 font-black text-[10px] md:text-xs uppercase tracking-[0.3em] rounded-full hover:scale-105 active:scale-95 shadow-2xl transition-transform ${isDark ? 'bg-white text-black' : 'bg-slate-900 text-white'}`}>
+                                                            <span className="w-full text-center block px-4">
+                                                                {qIdx === module.quiz.length - 1 ? "FINISH MODULE" : "CONTINUE SEQUENCE"}
+                                                            </span>
+                                                        </button>
                                                     </div>
                                                 )}
                                             </div>
@@ -437,13 +482,28 @@
                                             <div className={`absolute -inset-14 rounded-full blur-3xl opacity-30 ${isPassing ? 'bg-lime-500 animate-pulse' : 'bg-rose-500'}`}></div>
                                             <div className={`relative w-24 h-24 md:w-40 md:h-40 rounded-full flex items-center justify-center border-[3px] ${isPassing ? 'border-[var(--accent-lime)] text-[var(--accent-lime)]' : 'border-rose-500 text-rose-500'}`}><Icon name={isPassing ? "Zap" : "ShieldAlert"} size={80} /></div>
                                         </div>
-                                        <div className="space-y-6 text-center">
+                                        <div className="space-y-8 text-center">
                                             <h2 className={`text-4xl md:text-7xl lg:text-8xl font-black font-cinema uppercase tracking-tighter text-center leading-none ${isDark ? 'text-white' : 'text-slate-900'}`}>{isPassing ? "VALIDATED" : "FAILED"}</h2>
-                                            <p className={`text-lg md:text-2xl font-medium tracking-widest uppercase ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>Performance Logic: <span className={isDark ? 'text-white' : 'text-slate-900'}>{score} / 10</span>. {isPassing ? "System unlock confirmed." : "Recalibration required."}</p>
+                                            
+                                            <div className="space-y-4">
+                                                <p className={`text-sm md:text-xl font-bold tracking-widest uppercase ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>Performance Logic Verified</p>
+                                                <div className="text-7xl md:text-9xl font-black font-cinema leading-none tracking-tighter text-[var(--accent-lime)]">
+                                                    {score}<span className={`text-2xl md:text-4xl opacity-50 ml-2 ${isDark ? 'text-white' : 'text-slate-500'}`}>/ 10</span>
+                                                </div>
+                                                <p className={`text-[10px] md:text-sm font-medium tracking-[0.3em] uppercase ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                                                    {isPassing ? "System unlock confirmed." : "Recalibration required (8/10)."}
+                                                </p>
+                                            </div>
                                         </div>
                                         <div className="flex flex-col sm:flex-row gap-4 md:gap-8 justify-center pt-10 max-w-xl mx-auto">
-                                            <button onClick={resetModule} className={`btn-cinema flex-1 p-6 md:p-9 border rounded-full font-black text-[10px] md:text-xs uppercase tracking-[0.3em] transition-all flex items-center justify-center gap-4 ${isDark ? 'border-white/10 text-slate-500 hover:text-white hover:bg-white/5' : 'border-slate-200 text-slate-400 hover:text-slate-900 hover:bg-slate-50 shadow-sm'}`}><Icon name="RefreshCcw" size={18} /><span className="text-center">RECALIBRATE</span></button>
-                                            <button onClick={handleAcademyProgression} disabled={!isPassing} className={`btn-cinema flex-1 p-6 md:p-9 rounded-full font-black text-[10px] md:text-xs uppercase tracking-[0.3em] transition-all flex items-center justify-center gap-4 ${isPassing ? 'bg-[var(--accent-lime)] text-black shadow-2xl shadow-lime-500/20' : 'bg-neutral-800 text-slate-700 opacity-20 cursor-not-allowed grayscale'}`}><span className="text-center text-xs text-center uppercase">Next Module</span>{isPassing && <Icon name="ArrowRight" size={18} />}</button>
+                                            <button onClick={resetModule} className={`btn-cinema relative flex-1 p-6 md:p-9 border rounded-full font-black text-[10px] md:text-xs uppercase tracking-[0.3em] transition-all flex items-center justify-center ${isDark ? 'border-white/10 text-slate-500 hover:text-white hover:bg-white/5' : 'border-slate-200 text-slate-400 hover:text-slate-900 hover:bg-slate-50 shadow-sm'}`}>
+                                                <div className="absolute left-6 md:left-9"><Icon name="RefreshCcw" size={18} /></div>
+                                                <span className="text-center w-full block px-8 text-center">RECALIBRATE</span>
+                                            </button>
+                                            <button onClick={handleAcademyProgression} disabled={!isPassing} className={`btn-cinema relative flex-1 p-6 md:p-9 rounded-full font-black text-[10px] md:text-xs uppercase tracking-[0.3em] transition-all flex items-center justify-center ${isPassing ? 'bg-[var(--accent-lime)] text-black shadow-2xl shadow-lime-500/20' : 'bg-neutral-800 text-slate-700 opacity-20 cursor-not-allowed grayscale'}`}>
+                                                <span className="text-center w-full block px-8 text-center uppercase">Next Module</span>
+                                                {isPassing && <div className="absolute right-6 md:right-9"><Icon name="ArrowRight" size={18} /></div>}
+                                            </button>
                                         </div>
                                     </div>
                                 )}
@@ -451,7 +511,7 @@
                         </div>
                         
                         <footer className={`mt-20 md:mt-40 pt-16 border-t text-center px-4 ${isDark ? 'border-white/5' : 'border-slate-100'}`}>
-                            <p className={`text-[7px] md:text-[10px] font-black uppercase tracking-[0.45em] leading-loose text-center ${isDark ? 'text-slate-600' : 'text-slate-400'}`}>PROFESSIONAL POST-PRODUCTION LOGIC • PREPARED BY JOE NASR • SAEDUBAI.COM • UAE</p>
+                            <p className={`text-[7px] md:text-[10px] font-black uppercase tracking-[0.45em] leading-loose text-center ${isDark ? 'text-slate-600' : 'text-slate-400'}`}>DAVINCI RESOLVE • PROFESSIONAL POST-PRODUCTION LOGIC • PREPARED BY JOE NASR • SAEDUBAI.COM • UAE</p>
                         </footer>
                     </div>
                 </div>
@@ -463,5 +523,4 @@
     </script>
 </body>
 </html>
-
 
